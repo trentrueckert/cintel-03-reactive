@@ -83,14 +83,6 @@ with ui.layout_columns():
         def data_grid():
             return render.DataGrid(penguins)
 
-# --------------------------------------------------------
-# Reactive calculations and effects
-# --------------------------------------------------------
-
-# Add a reactive calculation to filter the data
-# By decorating the function with @reactive, we can use the function to filter the data
-# The function will be called whenever an input functions used to generate that output changes.
-# Any output that depends on the reactive function (e.g., filtered_data()) will be updated when the data changes.
 
 @reactive.calc
 def filtered_data():
