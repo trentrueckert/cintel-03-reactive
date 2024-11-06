@@ -34,7 +34,7 @@ with ui.layout_columns():
         @render_plotly
         def plotly_historgram():
             return px.histogram(
-                penguins, 
+                filtered_data(), 
                 x=input.selected_attribute(), 
                 nbins=input.plotly_bin_count(),
                 color="species",
@@ -46,7 +46,7 @@ with ui.layout_columns():
         @render.plot
         def plot2():
             ax=sns.histplot(
-                data=penguins, 
+                data=filtered_data(), 
                 x=input.selected_attribute(), 
                 bins=input.seaborn_bin_count())
             ax.set_title("Palmer Penguins")
@@ -60,7 +60,7 @@ with ui.layout_columns():
         @render_plotly
         def plotly_scatterplot():
             return px.scatter(
-                data_frame=penguins,
+                data_frame=filtered_data(),
                 x="body_mass_g",
                 y="bill_depth_mm",
                 color="species",
@@ -74,14 +74,14 @@ with ui.layout_columns():
         ui.card_header("Data Table")
         @render.data_frame
         def data_table():
-            return render.DataTable(penguins)
+            return render.DataTable(filtered_data())
 
     # Data grid showing all data
     with ui.card():
         ui.card_header("Data Grid")
         @render.data_frame
         def data_grid():
-            return render.DataGrid(penguins)
+            return render.DataGrid(filtered_data())
 
 
 @reactive.calc
