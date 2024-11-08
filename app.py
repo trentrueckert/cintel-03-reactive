@@ -11,6 +11,7 @@ ui.page_opts(title="Trent's Penguin Data", fillable=True)
 
 with ui.sidebar(
     position="right",
+    bg="#f8f8f8",
     open="open"
 ):
     ui.h2("Sidebar")
@@ -40,21 +41,22 @@ with ui.layout_columns():
                 color="species",
             )
             
-    # Seaborn Histogram showing all species   
+    # Data grid showing all data
     with ui.card():
-        ui.card_header("Seaborn Histogram")
-        @render.plot
-        def plot2():
-            ax=sns.histplot(
-                data=filtered_data(), 
-                x=input.selected_attribute(), 
-                bins=input.seaborn_bin_count())
-            ax.set_title("Palmer Penguins")
-            ax.set_xlabel(input.selected_attribute())
-            ax.set_ylabel("Number")
-            return ax
-            
-    # Plotly Scatterplot showing all species
+        ui.card_header("Data Grid")
+        @render.data_frame
+        def data_grid():
+            return render.DataGrid(filtered_data())
+    
+    # Data table showing all data        
+    with ui.card():
+        ui.card_header("Data Table")
+        @render.data_frame
+        def data_table():
+            return render.DataTable(filtered_data())
+
+# Plotly Scatterplot showing all species
+with ui.layout_columns():
     with ui.card():
         ui.card_header("Plotly Scatterplot: Species")
         @render_plotly
@@ -68,22 +70,25 @@ with ui.layout_columns():
                     "bill_depth_mm": "Bill Depth (mm)",
                     "body_mass_g": "Body Mass (g)"})
 
-# Data table showing all data
-with ui.layout_columns():
+    # Seaborn Histogram showing all species   
     with ui.card():
-        ui.card_header("Data Table")
-        @render.data_frame
-        def data_table():
-            return render.DataTable(filtered_data())
-
-    # Data grid showing all data
-    with ui.card():
-        ui.card_header("Data Grid")
-        @render.data_frame
-        def data_grid():
-            return render.DataGrid(filtered_data())
+        ui.card_header("Seaborn Histogram")
+        @render.plot
+        def plot2():
+            ax=sns.histplot(
+                data=filtered_data(), 
+                x=input.selected_attribute(), 
+                bins=input.seaborn_bin_count())
+            ax.set_title("Palmer Penguins")
+            ax.set_xlabel(input.selected_attribute())
+            ax.set_ylabel("Number")
+            return ax
 
 
 @reactive.calc
 def filtered_data():
-    return penguins
+    selected_species = input.selected_species_list()
+    if selected_species:
+        return penguins[penguins['species'].isin(selected_species)]
+    else:
+        return penguins 
